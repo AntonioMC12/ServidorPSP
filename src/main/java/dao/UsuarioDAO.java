@@ -67,14 +67,17 @@ public class UsuarioDAO {
 		return Usuarios;
 	}
 
-	public Usuario show(Long id) throws DAOException {
-		Usuario result = null;
+	public Boolean showById(Long id) throws DAOException {
+		Boolean result = false;
 
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			result = em.find(Usuario.class, id);
+			Usuario usuario = em.find(Usuario.class, id);
+			if (usuario != null) {
+				result = true;
+			}
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");

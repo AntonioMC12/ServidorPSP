@@ -42,4 +42,22 @@ public class CuentaController {
 		}
 		return null;
 	}
+
+	public void extraerDinero(Cuenta cuenta, double cantidad) {
+		try {
+			new CuentaDAO().extraerDinero(cuenta, cantidad);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void ingresarDinero(Cuenta cuenta, double cantidad) {
+		try {
+			new CuentaDAO().ingresarDinero(cuenta, cantidad);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

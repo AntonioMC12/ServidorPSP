@@ -15,14 +15,18 @@ public class AdministradorDAO {
 		return PersistenceUnit.getEM();
 	}
 
-	public Administrador show(Long id) throws DAOException {
-		Administrador result = null;
+	public boolean getAdmin(Long id) throws DAOException {
+
+		boolean result = false;
 
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			result = em.find(Administrador.class, id);
+			Administrador admin = em.find(Administrador.class, id);
+			if (admin != null) {
+				result = true;
+			}
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");

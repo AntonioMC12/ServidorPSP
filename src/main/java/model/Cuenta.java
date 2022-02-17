@@ -62,6 +62,21 @@ public class Cuenta implements Serializable {
 	public Usuario getUsuario() {
 		return usuario;
 	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public void setSaldo(Double saldo) {
+		this.saldo = saldo;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	@Override
 	public int hashCode() {

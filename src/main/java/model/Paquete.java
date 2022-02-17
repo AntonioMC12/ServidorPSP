@@ -4,7 +4,14 @@ public class Paquete<T> {
 	
 	int opcion;
 	T objeto;
+	double cantidad;
 
+	public double getCantidad() {
+		return cantidad;
+	}
+	public void setCantidad(double cantidad) {
+		this.cantidad = cantidad;
+	}
 	public int getOpcion() {
 		return opcion;
 	}
