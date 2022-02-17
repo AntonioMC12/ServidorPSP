@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import model.Administrador;
 import model.Cuenta;
 import model.Paquete;
 import model.Usuario;
@@ -29,7 +30,7 @@ public class ServidorMain implements Runnable {
 		Paquete<?> paquete = (Paquete<?>) action;
 		Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;	
 		Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
-
+		Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
 		switch (paquete.getOpcion()) {
 		case 1:
 			new UsuarioController().getUsuarioById(paqueteUsuario.getObjeto().getId());
@@ -57,6 +58,9 @@ public class ServidorMain implements Runnable {
 			break;
 		case 9:
 			new CuentaController().BorrarCuenta(paqueteCuenta.getObjeto());
+			break;
+		case 10:
+			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
 			break;
 		default:
 			break;
