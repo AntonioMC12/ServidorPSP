@@ -47,6 +47,7 @@ public class Usuario implements Serializable {
 		this.correo = correo;
 		this.password = password;
 		this.cuentas = cuentas;
+		
 	}
 
 	public Usuario() {
