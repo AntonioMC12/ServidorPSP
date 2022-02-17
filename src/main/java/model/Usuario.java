@@ -7,9 +7,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -36,22 +39,28 @@ public class Usuario implements Serializable {
 	private String correo;
 	@Column(name = "password")
 	private String password;
-
+	
 	@OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Cuenta> cuentas;
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name="idAdministrador")
+	private Administrador administrador;
 
-	public Usuario(Long id, String nombre, String apellidos, String correo, String password, List<Cuenta> cuentas) {
+	public Usuario(Long id, String nombre, String apellidos, String correo, String password, List<Cuenta> cuentas,
+			Administrador administrador) {
 		this.id = id;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.correo = correo;
 		this.password = password;
 		this.cuentas = cuentas;
-		
+		this.administrador = administrador;
+
 	}
 
 	public Usuario() {
-		this(-1L, "default", "default", "default", "default", new ArrayList<Cuenta>());
+		this(-1L, "default", "default", "default", "default", new ArrayList<Cuenta>(), new Administrador());
 	}
 
 	public Long getId() {
@@ -100,6 +109,14 @@ public class Usuario implements Serializable {
 
 	public void setCuentas(List<Cuenta> cuentas) {
 		this.cuentas = cuentas;
+	}
+	
+	public Administrador getAdministrador() {
+		return administrador;
+	}
+
+	public void setAdministrador(Administrador administrador) {
+		this.administrador = administrador;
 	}
 
 	@Override

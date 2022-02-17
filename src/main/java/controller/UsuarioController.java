@@ -26,12 +26,12 @@ public class UsuarioController {
 		}
 	}
 
-	public synchronized Usuario getUsuarioById(Long id) {
+	public synchronized Boolean getUsuarioById(Long id) {
 		try {
-			return new UsuarioDAO().show(id);
+			return new UsuarioDAO().showById(id);
 		} catch (DAOException e) {
 			e.printStackTrace();
-			return new Usuario();
+			return false;
 		}
 	}
 

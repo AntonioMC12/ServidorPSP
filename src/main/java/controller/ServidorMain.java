@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
+import model.Administrador;
+import model.Cuenta;
 import model.Paquete;
 import model.Usuario;
 
@@ -27,17 +29,40 @@ public class ServidorMain implements Runnable {
 	public void serverController(Object action) {
 
 		Paquete<?> paquete = (Paquete<?>) action;
+		Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;	
+		Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
+		Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
 		switch (paquete.getOpcion()) {
 		case 1:
-			//comprobar usuario en la base de datos.
-			Paquete<List<Usuario>> op1 = (Paquete<List<Usuario>>) paquete;
-			new UsuarioController().getUsuarioById(op1.getObjeto().get(0).getId());
+			new UsuarioController().getUsuarioById(paqueteUsuario.getObjeto().getId());
 			break;
-			
 		case 2:
-			
-
-
+			new CuentaController().mostrarCuenta(paqueteUsuario.getObjeto().getId());
+			break;
+		case 3:
+			new CuentaController().extraerDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
+			break;
+		case 4:
+			new CuentaController().ingresarDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
+			break;
+		case 5:
+			new UsuarioController().createUsuario(paqueteUsuario.getObjeto());
+			break;
+		case 6:
+			new CuentaController().CreateCuenta(paqueteCuenta.getObjeto());
+			break;
+		case 7:
+			new UsuarioController().getAllUsuarios();
+			break;
+		case 8:
+			new CuentaController().mostrarCuenta(paqueteCuenta.getObjeto().getId());
+			break;
+		case 9:
+			new CuentaController().BorrarCuenta(paqueteCuenta.getObjeto());
+			break;
+		case 10:
+			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
+			break;
 		default:
 			break;
 		}
@@ -50,7 +75,7 @@ public class ServidorMain implements Runnable {
 		try {
 			while(true) {
 				Socket cliente = servidor.accept();
-				System.out.println("Un nuevo cliente está conectado al servidor, la información es: \n " + cliente);
+				System.out.println("Un nuevo cliente estï¿½ conectado al servidor, la informaciï¿½n es: \n " + cliente);
 				//Escuchamos las entradas de los clientes
 				DataInputStream flujoEntrada = new DataInputStream(cliente.getInputStream());
 				String msn = flujoEntrada.readUTF();
@@ -58,7 +83,7 @@ public class ServidorMain implements Runnable {
 				
 				
 				
-				//Segun la entrada hacemos una acción u otra.
+				//Segun la entrada hacemos una acciï¿½n u otra.
 				//recibo op 1 del cliente
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				Object action = entradaCliente.readObject();

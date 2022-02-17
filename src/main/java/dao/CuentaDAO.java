@@ -9,22 +9,90 @@ import javax.persistence.RollbackException;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 
-import model.Usuario;
+import model.Cuenta;
 import utils.DAOException;
 import utils.PersistenceUnit;
 
-public class UsuarioDAO {
-
+public class CuentaDAO {
 	public static EntityManager createEM() {
 		return PersistenceUnit.getEM();
 	}
 
-	public void save(Usuario usuario) throws DAOException {
+	public void extraerDinero(Cuenta cuenta, double cantidad) throws DAOException {
+		EntityManager em = createEM();
+		try {
+			em.getTransaction().begin();
+			//si el saldo es menos que la cantidad a extraer
+			if(cuenta.getSaldo()-cantidad<0) { 
+				throw new DAOException("No se puede extraer esa cantidad");
+			}
+			cuenta.setSaldo(cuenta.getSaldo() - cantidad);
+			em.merge(cuenta);
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+		
+	}
+
+	public void ingresarDinero(Cuenta cuenta, double cantidad) throws DAOException {
+		EntityManager em = createEM();
+		try {
+			em.getTransaction().begin();
+			cuenta.setSaldo(cuenta.getSaldo() + cantidad);
+			em.merge(cuenta);
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+	}
+	public List<Cuenta> getCuentasByUsario(Long id) throws DAOException {
+		EntityManager em = createEM();
+		try {
+			TypedQuery<Cuenta> query = em.createQuery("SELECT c FROM Cuenta c WHERE c.usuario.id = :id", Cuenta.class);
+			query.setParameter("id", id);
+			return query.getResultList();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+	}
+
+	public void save(Cuenta cuenta) throws DAOException {
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			em.persist(usuario);
+			em.persist(cuenta);
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
@@ -41,14 +109,14 @@ public class UsuarioDAO {
 		}
 	}
 
-	public List<Usuario> showAll() throws DAOException {
-		List<Usuario> Usuarios = new ArrayList<Usuario>();
+	public List<Cuenta> showAll() throws DAOException {
+		List<Cuenta> Cuentas = new ArrayList<Cuenta>();
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			TypedQuery<Usuario> q = em.createNamedQuery("getAllUsuarios", Usuario.class);
-			Usuarios = q.getResultList();
+			TypedQuery<Cuenta> q = em.createNamedQuery("getAllCuentas", Cuenta.class);
+			Cuentas = q.getResultList();
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
@@ -64,20 +132,17 @@ public class UsuarioDAO {
 			throw new DAOException(e);
 		}
 
-		return Usuarios;
+		return Cuentas;
 	}
 
-	public Boolean showById(Long id) throws DAOException {
-		Boolean result = false;
+	public Cuenta showCuenta(Long id) throws DAOException {
+		Cuenta result = null;
 
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			Usuario usuario = em.find(Usuario.class, id);
-			if (usuario != null) {
-				result = true;
-			}
+			result = em.find(Cuenta.class, id);
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
@@ -96,12 +161,12 @@ public class UsuarioDAO {
 		return result;
 	}
 
-	public void delete(Usuario usuario) throws DAOException {
+	public void deleteCuenta(Cuenta cuenta) throws DAOException {
 		EntityManager em = createEM();
 
 		try {
 			em.getTransaction().begin();
-			em.remove(usuario);
+			em.remove(cuenta);
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
