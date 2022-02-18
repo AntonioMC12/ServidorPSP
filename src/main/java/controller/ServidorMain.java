@@ -13,10 +13,8 @@ import model.Paquete;
 import model.Usuario;
 
 public class ServidorMain implements Runnable {
-	
+
 	ServerSocket servidor;
-	
-	
 
 	public ServidorMain() {
 		try {
@@ -25,42 +23,51 @@ public class ServidorMain implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void serverController(Object action) {
 
 		Paquete<?> paquete = (Paquete<?>) action;
-		Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;	
-		Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
-		Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
+		
+		
+
 		switch (paquete.getOpcion()) {
 		case 1:
+			Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;
 			new UsuarioController().getUsuarioById(paqueteUsuario.getObjeto().getId());
 			break;
 		case 2:
-			new CuentaController().mostrarCuenta(paqueteUsuario.getObjeto().getId());
+			Paquete<Usuario> paqueteUsuario1 = (Paquete<Usuario>) paquete;
+			new CuentaController().mostrarCuenta(paqueteUsuario1.getObjeto().getId());
 			break;
 		case 3:
+			Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
 			new CuentaController().extraerDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
 			break;
 		case 4:
-			new CuentaController().ingresarDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
+			Paquete<Cuenta> paqueteCuenta1 = (Paquete<Cuenta>) paquete;
+			new CuentaController().ingresarDinero(paqueteCuenta1.getObjeto(), paqueteCuenta1.getCantidad());
 			break;
 		case 5:
-			new UsuarioController().createUsuario(paqueteUsuario.getObjeto());
+			Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
+			new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
 			break;
 		case 6:
-			new CuentaController().CreateCuenta(paqueteCuenta.getObjeto());
+			Paquete<Cuenta> paqueteCuenta2 = (Paquete<Cuenta>) paquete;
+			new CuentaController().CreateCuenta(paqueteCuenta2.getObjeto());
 			break;
 		case 7:
 			new UsuarioController().getAllUsuarios();
 			break;
 		case 8:
-			new CuentaController().mostrarCuenta(paqueteCuenta.getObjeto().getId());
+			Paquete<Cuenta> paqueteCuenta3 = (Paquete<Cuenta>) paquete;
+			new CuentaController().mostrarCuenta(paqueteCuenta3.getObjeto().getId());
 			break;
 		case 9:
-			new CuentaController().BorrarCuenta(paqueteCuenta.getObjeto());
+			Paquete<Cuenta> paqueteCuenta4 = (Paquete<Cuenta>) paquete;
+			new CuentaController().BorrarCuenta(paqueteCuenta4.getObjeto());
 			break;
 		case 10:
+			Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
 			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
 			break;
 		default:
@@ -68,34 +75,25 @@ public class ServidorMain implements Runnable {
 		}
 	}
 
-	
-
-
 	public void run() {
 		try {
-			while(true) {
+			while (true) {
 				Socket cliente = servidor.accept();
 				System.out.println("Un nuevo cliente est� conectado al servidor, la informaci�n es: \n " + cliente);
-				//Escuchamos las entradas de los clientes
+				// Escuchamos las entradas de los clientes
 				DataInputStream flujoEntrada = new DataInputStream(cliente.getInputStream());
 				String msn = flujoEntrada.readUTF();
-				
-				
-				
-				
-				//Segun la entrada hacemos una acci�n u otra.
-				//recibo op 1 del cliente
+
+				// Segun la entrada hacemos una acci�n u otra.
+				// recibo op 1 del cliente
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				Object action = entradaCliente.readObject();
 				serverController(action);
-				
+
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
-	
-	
-
 
 }
