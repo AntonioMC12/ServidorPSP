@@ -81,15 +81,11 @@ public class ServidorMain implements Runnable {
 				Socket cliente = servidor.accept();
 				System.out.println("Un nuevo cliente est� conectado al servidor, la informaci�n es: \n " + cliente);
 				// Escuchamos las entradas de los clientes
-				DataInputStream flujoEntrada = new DataInputStream(cliente.getInputStream());
-				String msn = flujoEntrada.readUTF();
-
-				// Segun la entrada hacemos una acci�n u otra.
-				// recibo op 1 del cliente
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				Object action = entradaCliente.readObject();
+				// Segun la entrada hacemos una acci�n u otra.
 				serverController(action);
-
+				// recibo op 1 del cliente
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
