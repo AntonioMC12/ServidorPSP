@@ -41,6 +41,7 @@ public class ServidorMain implements Runnable {
 		case 2:
 			Paquete<Usuario> paqueteUsuario1 = (Paquete<Usuario>) paquete;
 			new CuentaController().mostrarCuenta(paqueteUsuario1.getObjeto().getId());
+			
 			break;
 		case 3:
 			Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
@@ -52,7 +53,17 @@ public class ServidorMain implements Runnable {
 			break;
 		case 5:
 			Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
-			new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
+			Paquete<Object> respuestPaqueteUsuario2 = new Paquete<Object>();
+				ObjectOutputStream salidaObjetoUsuario2;
+				try {
+					salidaObjetoUsuario2 = new ObjectOutputStream(cliente.getOutputStream());
+					new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
+					respuestPaqueteUsuario2.setResultado(true);
+					salidaObjetoUsuario2.writeObject(respuestPaqueteUsuario2);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			break;
 		case 6:
 			Paquete<Cuenta> paqueteCuenta2 = (Paquete<Cuenta>) paquete;
@@ -75,37 +86,38 @@ public class ServidorMain implements Runnable {
 			break;
 		case 11:
 			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
-			Paquete<Usuario> respuestPaquete3 = new Paquete();
+			Paquete<Usuario> respuestPaqueteUsuario3 = new Paquete();
 			try {
-				salida = cliente.getOutputStream();
-				ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+				ObjectOutputStream salidaObjetoUsuario3 = new ObjectOutputStream(cliente.getOutputStream());
 				
 				if (new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
-					respuestPaquete3.setResultado(true);
-					salidaObjeto.writeObject(respuestPaquete3);
+					respuestPaqueteUsuario3.setResultado(true);
+					salidaObjetoUsuario3.writeObject(respuestPaqueteUsuario3);
 				} else {
-					respuestPaquete3.setResultado(false);
-					salidaObjeto.writeObject(respuestPaquete3);
+					respuestPaqueteUsuario3.setResultado(false);
+					salidaObjetoUsuario3.writeObject(respuestPaqueteUsuario3);
 				}
 			} catch (IOException e) {
-
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			break;
 		case 12:
-			Paquete<Administrador> paqueteUsuario4 = (Paquete<Administrador>) paquete;
-			Paquete<Administrador> respuestPaquete4 = new Paquete();
+			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
+			Paquete<Administrador> respuestAdministrador4 = new Paquete();
 			try {
-				salida = cliente.getOutputStream();
-				ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+				ObjectOutputStream salidaObjetoAdministrador4 = new ObjectOutputStream(cliente.getOutputStream());
 
-				if (new AdministradorController().logAdministrador(paqueteUsuario4.getObjeto())) {
-					respuestPaquete4.setResultado(true);
-					salidaObjeto.writeObject(respuestPaquete4);
+				if (new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto())) {
+					respuestAdministrador4.setResultado(true);
+					salidaObjetoAdministrador4.writeObject(respuestAdministrador4);
 				} else {
-					respuestPaquete4.setResultado(false);
-					salidaObjeto.writeObject(respuestPaquete4);
+					respuestAdministrador4.setResultado(false);
+					salidaObjetoAdministrador4.writeObject(respuestAdministrador4);
 				}
 			} catch (IOException e) {
-
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		default:
 			break;
