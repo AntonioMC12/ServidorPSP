@@ -15,7 +15,7 @@ import model.Paquete;
 import model.Usuario;
 
 public class ServidorMain implements Runnable {
-	
+
 	ServerSocket servidor;
 
 	public void serverController(Object action) {
@@ -28,7 +28,6 @@ public class ServidorMain implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 
 		Paquete<?> paquete = (Paquete<?>) action;
 
@@ -77,28 +76,20 @@ public class ServidorMain implements Runnable {
 		case 11:
 			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
 			Paquete<Usuario> respuestPaquete = new Paquete();
+			try {
+				salida = cliente.getOutputStream();
+				ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
 
-			if(new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
-				respuestPaquete.setResultado(true);
-				try {
-					salida = cliente.getOutputStream();
-					ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+				if (new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
+					respuestPaquete.setResultado(true);
 					salidaObjeto.writeObject(respuestPaquete);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}else {
-				respuestPaquete.setResultado(false);
-				try {
-					salida = cliente.getOutputStream();
-					ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+				} else {
+					respuestPaquete.setResultado(false);
 					salidaObjeto.writeObject(respuestPaquete);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-			}			
+			} catch (IOException e) {
+
+			}
 		default:
 			break;
 		}
