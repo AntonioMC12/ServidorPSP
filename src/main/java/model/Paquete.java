@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class Paquete<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	int opcion;
-	T objeto;
 	double cantidad;
 	Boolean resultado;
-
+  T objeto;
+  
 	public Boolean getResultado() {
 		return resultado;
 	}
@@ -26,12 +26,15 @@ public class Paquete<T> implements Serializable {
 	public int getOpcion() {
 		return opcion;
 	}
+
 	public void setOpcion(int opcion) {
 		this.opcion = opcion;
 	}
+
 	public T getObjeto() {
 		return objeto;
 	}
+
 	public void setObjeto(T objeto) {
 		this.objeto = objeto;
 	}
@@ -39,6 +42,5 @@ public class Paquete<T> implements Serializable {
 	public String toString() {
 		return "Paquete [opcion=" + opcion + ", objeto=" + objeto + ", cantidad=" + cantidad + "]";
 	}
-	
-	
+
 }
