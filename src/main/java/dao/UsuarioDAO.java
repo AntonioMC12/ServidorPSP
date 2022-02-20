@@ -21,7 +21,6 @@ public class UsuarioDAO {
 
 	public void save(Usuario usuario) throws DAOException {
 		EntityManager em = createEM();
-
 		try {
 			em.getTransaction().begin();
 			em.persist(usuario);
