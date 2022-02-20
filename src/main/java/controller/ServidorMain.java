@@ -3,6 +3,8 @@ package controller;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -12,27 +14,29 @@ import model.Paquete;
 import model.Usuario;
 
 public class ServidorMain implements Runnable {
-
+	
 	ServerSocket servidor;
-
-	public ServidorMain() {
-		try {
-			this.servidor = new ServerSocket(9999);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public void serverController(Object action) {
 
+		Socket cliente = new Socket();
+		OutputStream salida;
+		try {
+			salida = cliente.getOutputStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
 		Paquete<?> paquete = (Paquete<?>) action;
-		
-		
 
 		switch (paquete.getOpcion()) {
 		case 1:
 			Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;
-			new UsuarioController().getUsuarioById(paqueteUsuario.getObjeto().getId());
+			System.out.println(paqueteUsuario.toString());
+			new UsuarioController().createUsuario(paqueteUsuario.getObjeto());
+
 			break;
 		case 2:
 			Paquete<Usuario> paqueteUsuario1 = (Paquete<Usuario>) paquete;
@@ -69,6 +73,31 @@ public class ServidorMain implements Runnable {
 			Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
 			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
 			break;
+		case 11:
+			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
+			Paquete<Usuario> respuestPaquete = new Paquete();
+
+			if(new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
+				respuestPaquete.setResultado(true);
+				try {
+					salida = cliente.getOutputStream();
+					ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+					salidaObjeto.writeObject(respuestPaquete);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else {
+				respuestPaquete.setResultado(false);
+				try {
+					salida = cliente.getOutputStream();
+					ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+					salidaObjeto.writeObject(respuestPaquete);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}			
 		default:
 			break;
 		}
@@ -76,16 +105,16 @@ public class ServidorMain implements Runnable {
 
 	public void run() {
 		try {
+
+			this.servidor = new ServerSocket(9999);
+
 			while (true) {
 				Socket cliente = servidor.accept();
 				System.out.println("Un nuevo cliente est� conectado al servidor, la informaci�n es: \n " + cliente);
-				// Escuchamos las entradas de los clientes
-				DataInputStream flujoEntrada = new DataInputStream(cliente.getInputStream());
-				String msn = flujoEntrada.readUTF();
-
 				// Segun la entrada hacemos una acci�n u otra.
 				// recibo op 1 del cliente
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
+				System.out.println();
 				Object action = entradaCliente.readObject();
 				serverController(action);
 

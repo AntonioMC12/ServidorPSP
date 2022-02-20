@@ -42,5 +42,12 @@ public class UsuarioController {
 			e.printStackTrace();
 		}
 	}
-
+	public synchronized Boolean logUser(Usuario usuario) {
+		try {
+			return new UsuarioDAO().logUser(usuario);	
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
