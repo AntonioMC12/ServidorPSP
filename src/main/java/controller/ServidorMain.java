@@ -1,14 +1,11 @@
 package controller;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
-
 import model.Administrador;
 import model.Cuenta;
 import model.Paquete;
@@ -38,23 +35,35 @@ public class ServidorMain implements Runnable {
 			new UsuarioController().createUsuario(paqueteUsuario.getObjeto());
 
 			break;
+
 		case 2:
-			Paquete<Usuario> paqueteUsuario1 = (Paquete<Usuario>) paquete;
-			new CuentaController().mostrarCuenta(paqueteUsuario1.getObjeto().getId());
-			
+			Paquete<Object> respuestPaqueteCuenta5 = new Paquete<Object>();
+			ObjectOutputStream salidaObjetoCuenta5;
+				try {
+					salidaObjetoCuenta5 = new ObjectOutputStream(cliente.getOutputStream());
+					new CuentaController().mostrarCuentas();
+					respuestPaqueteCuenta5.setResultado(true);
+					salidaObjetoCuenta5.writeObject(respuestPaqueteCuenta5);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			break;
+			
 		case 3:
 			Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
 			new CuentaController().extraerDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
 			break;
+
 		case 4:
 			Paquete<Cuenta> paqueteCuenta1 = (Paquete<Cuenta>) paquete;
 			new CuentaController().ingresarDinero(paqueteCuenta1.getObjeto(), paqueteCuenta1.getCantidad());
 			break;
+
 		case 5:
 			Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
 			Paquete<Object> respuestPaqueteUsuario2 = new Paquete<Object>();
-				ObjectOutputStream salidaObjetoUsuario2;
+			ObjectOutputStream salidaObjetoUsuario2;
 				try {
 					salidaObjetoUsuario2 = new ObjectOutputStream(cliente.getOutputStream());
 					new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
@@ -65,25 +74,43 @@ public class ServidorMain implements Runnable {
 					e1.printStackTrace();
 				}
 			break;
+
 		case 6:
 			Paquete<Cuenta> paqueteCuenta2 = (Paquete<Cuenta>) paquete;
 			new CuentaController().CreateCuenta(paqueteCuenta2.getObjeto());
 			break;
+
 		case 7:
 			new UsuarioController().getAllUsuarios();
 			break;
+
 		case 8:
 			Paquete<Cuenta> paqueteCuenta3 = (Paquete<Cuenta>) paquete;
 			new CuentaController().mostrarCuenta(paqueteCuenta3.getObjeto().getId());
 			break;
+
 		case 9:
 			Paquete<Cuenta> paqueteCuenta4 = (Paquete<Cuenta>) paquete;
+			Paquete<Object> respuestPaqueteCuenta4 = new Paquete<Object>();
+			ObjectOutputStream salidaObjetoCuenta4;
 			new CuentaController().BorrarCuenta(paqueteCuenta4.getObjeto());
+			respuestPaqueteCuenta4.setResultado(true);
+			try {
+				salidaObjetoCuenta4 = new ObjectOutputStream(cliente.getOutputStream());
+				salidaObjetoCuenta4.writeObject(respuestPaqueteCuenta4);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
 			break;
+
 		case 10:
 			Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
 			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
 			break;
+
 		case 11:
 			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
 			Paquete<Usuario> respuestPaqueteUsuario3 = new Paquete();
@@ -102,6 +129,7 @@ public class ServidorMain implements Runnable {
 				e.printStackTrace();
 			}
 			break;
+
 		case 12:
 			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
 			Paquete<Administrador> respuestAdministrador4 = new Paquete();
