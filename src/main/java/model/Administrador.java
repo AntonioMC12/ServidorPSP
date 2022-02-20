@@ -6,13 +6,17 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "Administrador")
 @NamedQueries({
 	@NamedQuery(name="getAdminByNombrePassword", query="SELECT a FROM Administrador a WHERE a.nombre = :nombre AND a.password = :password"),
 })
@@ -33,7 +37,7 @@ public class Administrador implements Serializable {
 	@Column(name = "password")
 	private String password;
 	
-	@OneToMany(mappedBy = "Administrador", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "administrador", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Usuario>usuario;
 
 	public Administrador(Long id, String nombre, String apellidos, String correo, String password,

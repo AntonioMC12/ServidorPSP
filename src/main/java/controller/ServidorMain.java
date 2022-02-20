@@ -154,12 +154,11 @@ public class ServidorMain implements Runnable {
 
 	public void run() {
 		try {
-
-			this.servidor = new ServerSocket(9999);
-
+			System.out.println("INICIANDO SERVIDOR");
 			while (true) {
 				Socket cliente = servidor.accept();
 				System.out.println("Un nuevo cliente est� conectado al servidor, la informaci�n es: \n " + cliente);
+				// Escuchamos las entradas de los clientes
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				System.out.println();
 				Object action = entradaCliente.readObject();

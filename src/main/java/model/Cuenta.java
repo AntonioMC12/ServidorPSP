@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Cuenta")
 @NamedQueries({
-	@NamedQuery(name="getAllCuentas", query="SELECT * From Cuenta")
+	@NamedQuery(name="getAllCuentas", query="SELECT c From Cuenta c")
 })
 public class Cuenta implements Serializable {
 
