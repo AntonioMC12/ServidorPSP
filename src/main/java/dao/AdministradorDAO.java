@@ -14,6 +14,28 @@ public class AdministradorDAO {
 	public static EntityManager createEM() {
 		return PersistenceUnit.getEM();
 	}
+	
+	public void save(Administrador admin) throws DAOException {
+		EntityManager em = createEM();
+
+		try {
+			em.getTransaction().begin();
+			em.persist(admin);
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+	}
 
 	public boolean getAdmin(Long id) throws DAOException {
 

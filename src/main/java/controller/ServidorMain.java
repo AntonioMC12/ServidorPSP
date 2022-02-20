@@ -77,9 +77,10 @@ public class ServidorMain implements Runnable {
 
 	public void run() {
 		try {
+			System.out.println("INICIANDO SERVIDOR");
 			while (true) {
 				Socket cliente = servidor.accept();
-				System.out.println("Un nuevo cliente estï¿½ conectado al servidor, la informaciï¿½n es: \n " + cliente);
+				System.out.println("Un nuevo cliente estï¿½ conectado al servidor, la información es: \n " + cliente);
 				// Escuchamos las entradas de los clientes
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				Object action = entradaCliente.readObject();
