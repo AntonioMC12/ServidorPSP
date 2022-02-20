@@ -117,5 +117,33 @@ public class UsuarioDAO {
 			throw new DAOException(e);
 		}
 	}
-
+	
+	public Boolean logUser(Usuario usuario) throws DAOException{
+		Boolean result = false;
+		EntityManager em = createEM();
+		try {
+			em.getTransaction().begin();
+			TypedQuery<Usuario> q = em.createNamedQuery("getUsuarioByNombrePassword", Usuario.class);
+			q.setParameter("nombre", usuario.getNombre());
+			q.setParameter("password", usuario.getPassword());
+			Usuario usuario2 = q.getSingleResult();
+			if(usuario2 != null){
+				result = true;
+			}
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin, el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La query es invalida o no se ha definido", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}		
+		return result;
+	}
 }
