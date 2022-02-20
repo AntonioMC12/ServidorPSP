@@ -75,17 +75,34 @@ public class ServidorMain implements Runnable {
 			break;
 		case 11:
 			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
-			Paquete<Usuario> respuestPaquete = new Paquete();
+			Paquete<Usuario> respuestPaquete3 = new Paquete();
+			try {
+				salida = cliente.getOutputStream();
+				ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
+				
+				if (new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
+					respuestPaquete3.setResultado(true);
+					salidaObjeto.writeObject(respuestPaquete3);
+				} else {
+					respuestPaquete3.setResultado(false);
+					salidaObjeto.writeObject(respuestPaquete3);
+				}
+			} catch (IOException e) {
+
+			}
+		case 12:
+			Paquete<Administrador> paqueteUsuario4 = (Paquete<Administrador>) paquete;
+			Paquete<Administrador> respuestPaquete4 = new Paquete();
 			try {
 				salida = cliente.getOutputStream();
 				ObjectOutputStream salidaObjeto = new ObjectOutputStream(salida);
 
-				if (new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
-					respuestPaquete.setResultado(true);
-					salidaObjeto.writeObject(respuestPaquete);
+				if (new AdministradorController().logAdministrador(paqueteUsuario4.getObjeto())) {
+					respuestPaquete4.setResultado(true);
+					salidaObjeto.writeObject(respuestPaquete4);
 				} else {
-					respuestPaquete.setResultado(false);
-					salidaObjeto.writeObject(respuestPaquete);
+					respuestPaquete4.setResultado(false);
+					salidaObjeto.writeObject(respuestPaquete4);
 				}
 			} catch (IOException e) {
 

@@ -9,8 +9,13 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+@NamedQueries({
+	@NamedQuery(name="getAdminByNombrePassword", query="SELECT a FROM Administrador a WHERE a.nombre = :nombre AND a.password = :password"),
+})
 public class Administrador implements Serializable {
 
 	private static final long serialVersionUID = 1L;
