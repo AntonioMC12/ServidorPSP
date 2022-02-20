@@ -1,5 +1,6 @@
 package controller;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AppMain {
 		Thread threadServer = new Thread(server);
 		threadServer.start();
 		*/
-		Administrador admin = new Administrador(null,"Miguel","García","admin@gmail.com","1234",new ArrayList<Usuario>());
+		Administrador admin = new Administrador(null,"Miguel","Garcï¿½a","admin@gmail.com","1234",new ArrayList<Usuario>());
 		Usuario usuario = new Usuario(null, "antonio", "munios", "prueba@gmail.com", "1234", new ArrayList<Cuenta>(), admin);
 		Cuenta cuenta = new Cuenta(null, "1234",10.0, usuario);
 		List<Cuenta> cuentas = new ArrayList<Cuenta>();

@@ -21,7 +21,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Usuario")
 @NamedQueries({
-	@NamedQuery(name="getAllUsers", query="SELECT u FROM Usuario u")
+	@NamedQuery(name="getAllUsers", query="SELECT u FROM Usuario u"),
+	@NamedQuery(name="getUsuarioByNombrePassword", query="SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.password = :password")
 })
 public class Usuario implements Serializable {
 

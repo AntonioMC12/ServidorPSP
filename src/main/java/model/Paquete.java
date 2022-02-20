@@ -1,11 +1,28 @@
 package model;
 
-public class Paquete<T> {
+import java.io.Serializable;
+
+public class Paquete<T> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	int opcion;
 	double cantidad;
-	T objeto;
-
+	Boolean resultado;
+  T objeto;
+  
+	public Boolean getResultado() {
+		return resultado;
+	}
+	public void setResultado(Boolean resultado) {
+		this.resultado = resultado;
+	}
+	public double getCantidad() {
+		return cantidad;
+	}
+	public void setCantidad(double cantidad) {
+		this.cantidad = cantidad;
+	}
 	public int getOpcion() {
 		return opcion;
 	}
@@ -21,13 +38,9 @@ public class Paquete<T> {
 	public void setObjeto(T objeto) {
 		this.objeto = objeto;
 	}
-
-	public double getCantidad() {
-		return cantidad;
-	}
-
-	public void setCantidad(double cantidad) {
-		this.cantidad = cantidad;
+	@Override
+	public String toString() {
+		return "Paquete [opcion=" + opcion + ", objeto=" + objeto + ", cantidad=" + cantidad + "]";
 	}
 
 }
