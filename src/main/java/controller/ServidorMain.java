@@ -13,11 +13,10 @@ import model.Usuario;
 
 public class ServidorMain implements Runnable {
 
-	ServerSocket servidor;
+	ServerSocket servidor ;
 
-	public void serverController(Object action) {
+	public void serverController(Object action, Socket cliente) {
 
-		Socket cliente = new Socket();
 		OutputStream salida;
 		try {
 			salida = cliente.getOutputStream();
@@ -135,7 +134,7 @@ public class ServidorMain implements Runnable {
 			Paquete<Administrador> respuestAdministrador4 = new Paquete();
 			try {
 				ObjectOutputStream salidaObjetoAdministrador4 = new ObjectOutputStream(cliente.getOutputStream());
-
+				
 				if (new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto())) {
 					respuestAdministrador4.setResultado(true);
 					salidaObjetoAdministrador4.writeObject(respuestAdministrador4);
@@ -147,6 +146,7 @@ public class ServidorMain implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			break;
 		default:
 			break;
 		}
@@ -155,15 +155,17 @@ public class ServidorMain implements Runnable {
 	public void run() {
 		try {
 			System.out.println("INICIANDO SERVIDOR");
+			this.servidor = new ServerSocket(9999);
 			while (true) {
 				Socket cliente = servidor.accept();
-				System.out.println("Un nuevo cliente est� conectado al servidor, la informaci�n es: \n " + cliente);
+				System.out.println("Un nuevo cliente esta conectado al servidor, la informacion es: \n " + cliente);
 				// Escuchamos las entradas de los clientes
 				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
 				System.out.println();
 				Object action = entradaCliente.readObject();
+				System.out.println(action.toString());
 				// Segun la entrada hacemos una acci�n u otra.
-				serverController(action);
+				serverController(action,cliente);
 				// recibo op 1 del cliente
 			}
 		} catch (Exception e) {

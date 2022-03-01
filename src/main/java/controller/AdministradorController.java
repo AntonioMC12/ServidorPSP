@@ -18,6 +18,7 @@ public class AdministradorController {
 	public boolean logAdministrador(Administrador admin) {
 		try {
 			new AdministradorDAO().logAdmin(admin);
+			return true;
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
