@@ -132,16 +132,15 @@ public class ServidorMain implements Runnable {
 */
 		case 12:
 			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
-			Paquete<Administrador> respuestAdministrador4 = new Paquete();
+			//Paquete<Administrador> respuestAdministrador4 = new Paquete();
 			
 			try {
 				Boolean bool = new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto());
 				if (bool) {
-					respuestAdministrador4.setResultado(true);
-					respuestAdministrador4.setObjeto(new Administrador());
-					this.sm.sendObjectToServer(respuestAdministrador4);		
+					paqueteAdministrador4.setResultado(true);
+					this.sm.sendObjectToServer(paqueteAdministrador4);		
 				} else {
-					respuestAdministrador4.setResultado(false);
+					paqueteAdministrador4.setResultado(false);
 				}}
 				
 			catch (Exception e) {

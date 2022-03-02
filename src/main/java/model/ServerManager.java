@@ -31,7 +31,7 @@ public class ServerManager {
 
             obj = inputStream.readObject();
 
-            socket.close();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,14 +43,11 @@ public class ServerManager {
     public void sendObjectToServer(Object obj){
 
         try(ServerSocket serverSocket = new ServerSocket(port)) {
-            socket = serverSocket.accept();
             
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.writeObject(obj);
 
             outputStream.flush();
-            outputStream.close();
-
 
         } catch (Exception e) {
             e.printStackTrace();
