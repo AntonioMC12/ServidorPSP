@@ -9,14 +9,15 @@ import java.net.Socket;
 import model.Administrador;
 import model.Cuenta;
 import model.Paquete;
+import model.ServerManager;
 import model.Usuario;
 
 public class ServidorMain implements Runnable {
 
 	ServerSocket servidor ;
-
-	public void serverController(Object action, Socket cliente) {
-
+	ServerManager sm = new ServerManager(9999);
+	public void serverController(Object action) {
+		/**Socket cliente = null;
 		OutputStream salida;
 		try {
 			salida = cliente.getOutputStream();
@@ -25,9 +26,9 @@ public class ServidorMain implements Runnable {
 			e.printStackTrace();
 		}
 
+		 */
 		Paquete<?> paquete = (Paquete<?>) action;
-
-		switch (paquete.getOpcion()) {
+		switch (paquete.getOpcion()) {/**
 		case 1:
 			Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;
 			System.out.println(paqueteUsuario.toString());
@@ -128,23 +129,23 @@ public class ServidorMain implements Runnable {
 				e.printStackTrace();
 			}
 			break;
-
+*/
 		case 12:
 			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
 			Paquete<Administrador> respuestAdministrador4 = new Paquete();
+			
 			try {
-				ObjectOutputStream salidaObjetoAdministrador4 = new ObjectOutputStream(cliente.getOutputStream());
-				
-				if (new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto())) {
+				Boolean bool = new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto());
+				if (bool) {
 					respuestAdministrador4.setResultado(true);
-					salidaObjetoAdministrador4.writeObject(respuestAdministrador4);
+					respuestAdministrador4.setObjeto(new Administrador());
+					this.sm.sendObjectToServer(respuestAdministrador4);		
 				} else {
 					respuestAdministrador4.setResultado(false);
-					salidaObjetoAdministrador4.writeObject(respuestAdministrador4);
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				}}
+				
+			catch (Exception e) {
+				// TODO: handle exception
 			}
 			break;
 		default:
@@ -155,18 +156,11 @@ public class ServidorMain implements Runnable {
 	public void run() {
 		try {
 			System.out.println("INICIANDO SERVIDOR");
-			this.servidor = new ServerSocket(9999);
 			while (true) {
-				Socket cliente = servidor.accept();
-				System.out.println("Un nuevo cliente esta conectado al servidor, la informacion es: \n " + cliente);
-				// Escuchamos las entradas de los clientes
-				ObjectInputStream entradaCliente = new ObjectInputStream(cliente.getInputStream());
-				System.out.println();
-				Object action = entradaCliente.readObject();
+				System.out.println("Un nuevo cliente esta conectado al servidor, la informacion es: \n ");
+				Object action = sm.getObjectFromClient();
 				System.out.println(action.toString());
-				// Segun la entrada hacemos una acci�n u otra.
-				serverController(action,cliente);
-				// recibo op 1 del cliente
+				serverController(action);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

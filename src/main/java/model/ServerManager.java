@@ -1,5 +1,6 @@
 package model;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -39,8 +40,25 @@ public class ServerManager {
         return obj;
     }
 
-    public void sendObjectToClient(Object obj){
-     
+    public void sendObjectToServer(Object obj){
+
+        try(ServerSocket serverSocket = new ServerSocket(port)) {
+            socket = serverSocket.accept();
+            
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(obj);
+
+            outputStream.flush();
+            outputStream.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+	public int getPort() {
+		return port;
+	}
+    
 }
