@@ -9,12 +9,13 @@ import utils.DAOException;
 
 public class UsuarioController {
 
-	public synchronized void createUsuario(Usuario usuario) {
+	public synchronized boolean createUsuario(Usuario usuario) {
 		try {
 			new UsuarioDAO().save(usuario);
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	public synchronized List<Usuario> getAllUsuarios() {
@@ -48,6 +49,14 @@ public class UsuarioController {
 		} catch (DAOException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	public synchronized List<Usuario> mostarUsuariosPorAdmin(Long id) {
+		try {
+			return new UsuarioDAO().showAllByAdmin(id);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return new ArrayList<Usuario>();
 		}
 	}
 }

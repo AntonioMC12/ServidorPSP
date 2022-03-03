@@ -22,7 +22,8 @@ import javax.persistence.Table;
 @Table(name = "Usuario")
 @NamedQueries({
 	@NamedQuery(name="getAllUsers", query="SELECT u FROM Usuario u"),
-	@NamedQuery(name="getUsuarioByNombrePassword", query="SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.password = :password")
+	@NamedQuery(name="getUsuarioByNombrePassword", query="SELECT u FROM Usuario u WHERE u.nombre = :nombre AND u.password = :password"),
+	@NamedQuery(name="getUsuariosByAdmin", query="SELECT u FROM Usuario u WHERE u.administrador.id = :id")
 })
 public class Usuario implements Serializable {
 
@@ -41,7 +42,7 @@ public class Usuario implements Serializable {
 	@Column(name = "password")
 	private String password;
 	
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch=FetchType.EAGER,mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Cuenta> cuentas;
 	
 	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
@@ -58,6 +59,9 @@ public class Usuario implements Serializable {
 		this.cuentas = cuentas;
 		this.administrador = administrador;
 
+	}
+	public Usuario(String nombre, String apellidos, String correo, String password, Administrador administrador) {
+		this(-1L, nombre, apellidos, correo, password, new ArrayList<Cuenta>(), administrador);
 	}
 	
 	public Usuario(String nombre, String pass) {

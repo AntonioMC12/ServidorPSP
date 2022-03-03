@@ -1,14 +1,10 @@
 package controller;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.nio.LongBuffer;
 import java.util.List;
 
+import dao.AdministradorDAO;
 import dao.UsuarioDAO;
 import model.Administrador;
 import model.Cuenta;
@@ -29,9 +25,7 @@ public class ServidorMain implements Runnable {
 
 		case 1:
 			Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;
-			System.out.println(paqueteUsuario.toString());
 			new UsuarioController().createUsuario(paqueteUsuario.getObjeto());
-
 			break;
 
 		case 2:
@@ -66,26 +60,40 @@ public class ServidorMain implements Runnable {
 			break;
 
 		case 5:
-			/*Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
-			Paquete<Object> respuestPaqueteUsuario2 = new Paquete<Object>();
-			ObjectOutputStream salidaObjetoUsuario2;
-			try {
-				salidaObjetoUsuario2 = new ObjectOutputStream(cliente.getOutputStream());
-				new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
-				respuestPaqueteUsuario2.setResultado(true);
-				salidaObjetoUsuario2.writeObject(respuestPaqueteUsuario2);
-			} catch (IOException e1) { // TODO Auto-generated catch block
-				e1.printStackTrace();
-			}*/
+			Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
+			System.out.println(paqueteUsuario2.getObjeto().toString());
+				try {
+					if(new UsuarioDAO().updateUsuario(paqueteUsuario2.getObjeto())!= null){
+						paqueteUsuario2.setResultado(true);
+						this.sm.sendObjectToServer(paqueteUsuario2);
+					}else{
+						paqueteUsuario2.setResultado(false);
+						this.sm.sendObjectToServer(paqueteUsuario2);
+					}
+				} catch (DAOException e1) {
+					e1.printStackTrace();
+				};
 			break;
 
 		case 6:
 			Paquete<Cuenta> paqueteCuenta2 = (Paquete<Cuenta>) paquete;
-			new CuentaController().CreateCuenta(paqueteCuenta2.getObjeto());
+			System.out.println("hola");
+			System.out.println(paqueteCuenta2.getObjeto().getUsuario().toString());
+			if(new CuentaController().CreateCuenta(paqueteCuenta2.getObjeto())){
+				paqueteCuenta2.setResultado(true);
+				this.sm.sendObjectToServer(paqueteCuenta2);
+			}else{
+				paqueteCuenta2.setResultado(false);
+
+				this.sm.sendObjectToServer(paqueteCuenta2);
+			}
 			break;
 
-		case 7:
-			new UsuarioController().getAllUsuarios();
+		case 7: //Mostramos usuarios del administrador
+		Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
+		Paquete<List<Usuario>> paqueteUsuarios = new Paquete<List<Usuario>>();
+			paqueteUsuarios.setObjeto(new UsuarioController().mostarUsuariosPorAdmin(paqueteAdministrador.getObjeto().getId()));
+			this.sm.sendObjectToServer(paqueteUsuarios);
 			break;
 
 		case 8:
@@ -94,23 +102,22 @@ public class ServidorMain implements Runnable {
 			break;
 
 		case 9:
-			/*Paquete<Cuenta> paqueteCuenta4 = (Paquete<Cuenta>) paquete;
-			Paquete<Object> respuestPaqueteCuenta4 = new Paquete<Object>();
-			ObjectOutputStream salidaObjetoCuenta4;
-			new CuentaController().BorrarCuenta(paqueteCuenta4.getObjeto());
-			respuestPaqueteCuenta4.setResultado(true);
-			try {
-				salidaObjetoCuenta4 = new ObjectOutputStream(cliente.getOutputStream());
-				salidaObjetoCuenta4.writeObject(respuestPaqueteCuenta4);
-			} catch (IOException e1) { // TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (Exception e) { // TODO: handle exception
-			}*/
+			Paquete<Long> paqueteCuenta4 = (Paquete<Long>) paquete;
+			System.out.println(paqueteCuenta4.getObjeto());
+			if(new CuentaController().BorrarCuenta(paqueteCuenta4.getObjeto())){
+				paqueteCuenta4.setResultado(true);
+				this.sm.sendObjectToServer(paqueteCuenta4);
+			}else{
+				paqueteCuenta4.setResultado(false);
+				this.sm.sendObjectToServer(paqueteCuenta4);
+			}
 			break;
 
 		case 10:
-			Paquete<Administrador> paqueteAdministrador = (Paquete<Administrador>) paquete;
-			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
+			Paquete<List<Cuenta>> paqueteCuenta5L = new Paquete<List<Cuenta>>();
+			paqueteCuenta5L.setObjeto(new CuentaController().mostrarCuentas());
+			this.sm.sendObjectToServer(paqueteCuenta5L);
+
 			break;
 
 		case 11: // LOGIN USUARIO, DEVUELVE TRUE SI ESTA EN LA BD Y FALSE SI NO.
@@ -123,9 +130,6 @@ public class ServidorMain implements Runnable {
 					Usuario u=new UsuarioDAO().getUsuarioByNamePassword(paqueteUsuario11.getObjeto());
 				
 					paqueteUsuario11.setObjeto(u);
-					
-					System.out.println("+++++++++++++++++++++++++++++");
-					System.out.println(paqueteUsuario11);
 					this.sm.sendObjectToServer(paqueteUsuario11);
 				} else {
 					paqueteUsuario11.setResultado(false);
@@ -135,12 +139,13 @@ public class ServidorMain implements Runnable {
 			}
 			break;
 
-		case 12: // LOGIN ADMINISTRADOR, DEVUELVE TRUE SI ESTA EN LA BD Y FALSE SI NO.
+		case 12:
 			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
 			try {
-				Boolean bool = new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto());
-				if (bool) {
+				if (new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto())) {
+					Administrador a = new AdministradorDAO().getAdministradorByNamePassword(paqueteAdministrador4.getObjeto());
 					paqueteAdministrador4.setResultado(true);
+					paqueteAdministrador4.setObjeto(a);
 					this.sm.sendObjectToServer(paqueteAdministrador4);
 				} else {
 					paqueteAdministrador4.setResultado(false);
@@ -150,7 +155,7 @@ public class ServidorMain implements Runnable {
 			}
 			break;
 		default:
-			break;
+			break; 
 		}
 	}
 
@@ -160,7 +165,6 @@ public class ServidorMain implements Runnable {
 			while (true) {
 				System.out.println("Un nuevo cliente esta conectado al servidor, la informacion es: \n ");
 				Object action = sm.getObjectFromClient();
-				System.out.println(action.toString());
 				serverController(action);
 			}
 		} catch (Exception e) {

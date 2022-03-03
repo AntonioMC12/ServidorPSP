@@ -10,6 +10,7 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 
 import model.Cuenta;
+import model.Usuario;
 import utils.DAOException;
 import utils.PersistenceUnit;
 
@@ -87,12 +88,17 @@ public class CuentaDAO {
 		}
 	}
 
-	public void save(Cuenta cuenta) throws DAOException {
+	public boolean save(Cuenta cuenta,Long idUser) throws DAOException {
+		boolean result = false;
 		EntityManager em = createEM();
-
 		try {
 			em.getTransaction().begin();
+			Usuario usuario = em.find(Usuario.class, idUser);
+			cuenta.setUsuario(usuario);
 			em.persist(cuenta);
+			if(cuenta != null){
+				result = true;
+			}
 			em.getTransaction().commit();
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
@@ -107,6 +113,7 @@ public class CuentaDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
+		return result;
 	}
 
 	public List<Cuenta> showAll() throws DAOException {
@@ -160,27 +167,36 @@ public class CuentaDAO {
 
 		return result;
 	}
-
-	public void deleteCuenta(Cuenta cuenta) throws DAOException {
+	//Metodo para solo borar la cuenta de la base de datos por el id
+	public boolean deleteCuenta(Long id) throws DAOException {
+		boolean result = false;
+		System.out.println("Entro al delete");
 		EntityManager em = createEM();
-
 		try {
 			em.getTransaction().begin();
+			System.out.println("Entro al begin");
+			Cuenta cuenta = em.find(Cuenta.class, id);
+			System.out.println("Entro al find");
+			System.out.println(cuenta.getId());
+			//solo borra la cuenta de la base de datos
 			em.remove(cuenta);
+			System.out.println("Entro al remove");	
 			em.getTransaction().commit();
+			System.out.println("Entro al commit");
+			result = true;
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
 		} catch (IllegalStateException e) {
-			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+			throw new DAOException("Error de estado, puede ser del begin, el commit", e);
 		} catch (RollbackException e) {
 			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
 		} catch (TransactionRequiredException e) {
 			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
 		} catch (IllegalArgumentException e) {
-			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+			throw new DAOException("La id pasada al find es invalida", e);
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
+		return result;
 	}
-
 }
