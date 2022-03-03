@@ -19,12 +19,17 @@ public class UsuarioDAO {
 		return PersistenceUnit.getEM();
 	}
 
-	public void save(Usuario usuario) throws DAOException {
+	public boolean save(Usuario usuario) throws DAOException {
+		boolean result= false;
 		EntityManager em = createEM();
 		try {
 			em.getTransaction().begin();
 			em.persist(usuario);
+			if(usuario != null){
+				result = true;
+			}
 			em.getTransaction().commit();
+
 		} catch (EntityExistsException e) {
 			throw new DAOException("Error, la entidad ya existe");
 		} catch (IllegalStateException e) {
@@ -38,6 +43,7 @@ public class UsuarioDAO {
 		} catch (Exception e) {
 			throw new DAOException(e);
 		}
+		return result;
 	}
 
 	public List<Usuario> showAll() throws DAOException {
@@ -175,5 +181,26 @@ public class UsuarioDAO {
 			throw new DAOException(e);
 		}		
 		return result;
+	}
+	public Usuario updateUsuario(Usuario usuario) throws DAOException{
+		EntityManager em = createEM();
+		try {
+			em.getTransaction().begin();
+			em.merge(usuario);
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+		return usuario;
 	}
 }

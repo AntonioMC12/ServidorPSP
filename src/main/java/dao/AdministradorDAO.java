@@ -95,4 +95,30 @@ public class AdministradorDAO {
 		}		
 		return result;
 	}
+
+	public Administrador getAdministradorByNamePassword(Administrador objeto) throws DAOException {
+		EntityManager em = createEM();
+		Administrador admin = null;
+		try {
+			em.getTransaction().begin();
+			TypedQuery<Administrador> q = em.createNamedQuery("getAdminByNombrePassword", Administrador.class);
+			q.setParameter("nombre", objeto.getNombre());
+			q.setParameter("password", objeto.getPassword());
+			admin = q.getSingleResult();
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin, el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La query es invalida o no se ha definido", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+		return admin;
+	}
 }

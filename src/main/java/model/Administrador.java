@@ -18,8 +18,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Administrador")
 @NamedQueries({
-	@NamedQuery(name="getAdminByNombrePassword", query="SELECT a FROM Administrador a WHERE a.nombre = :nombre AND a.password = :password"),
-})
+	@NamedQuery(name ="getAdminByNombrePassword", query = "SELECT a FROM Administrador a WHERE a.nombre = :nombre AND a.password = :password")
+})	
 public class Administrador implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,7 +50,9 @@ public class Administrador implements Serializable {
 		this.password = password;
 		this.usuario = usuario;
 	}
-
+	public Administrador(String nombre, String password) {
+		this(-1L, nombre, "default", "default", password, new ArrayList<Usuario>());
+	}
 	public Administrador() {
 		this(-1L, "default", "default", "default", "default", new ArrayList<Usuario>());
 	}

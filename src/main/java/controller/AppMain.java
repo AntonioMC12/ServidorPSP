@@ -1,16 +1,5 @@
 package controller;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import dao.AdministradorDAO;
-import dao.UsuarioDAO;
-import model.Administrador;
-import model.Cuenta;
-import model.Usuario;
-import utils.DAOException;
-
 public class AppMain {
 
 	public static void main(String[] args) {
