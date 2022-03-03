@@ -51,4 +51,12 @@ public class UsuarioController {
 			return false;
 		}
 	}
+	public synchronized List<Usuario> mostarUsuariosPorAdmin(Long id) {
+		try {
+			return new UsuarioDAO().showAllByAdmin(id);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return new ArrayList<Usuario>();
+		}
+	}
 }

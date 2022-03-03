@@ -8,21 +8,24 @@ import utils.DAOException;
 
 public class CuentaController {
 	
-	public void CreateCuenta(Cuenta cuenta) {
+	public boolean CreateCuenta(Cuenta cuenta) {
 		try {
-			new CuentaDAO().save(cuenta);
+			return new CuentaDAO().save(cuenta, cuenta.getUsuario().getId());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 	}
-	public void BorrarCuenta(Cuenta cuenta) {
+	public boolean BorrarCuenta(Long id) {
 		try {
-			new CuentaDAO().deleteCuenta(cuenta);
+			System.out.println("Borrando cuenta");
+			return new CuentaDAO().deleteCuenta(id);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 	}
 	public Cuenta mostrarCuenta(Long id) {
 		try {
