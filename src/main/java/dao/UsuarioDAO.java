@@ -116,8 +116,8 @@ public class UsuarioDAO {
 			throw new DAOException(e);
 		}
 	}
-	
-	public Boolean logUser(Usuario usuario) throws DAOException{
+
+	public Boolean logUser(Usuario usuario) throws DAOException {
 		Boolean result = false;
 		EntityManager em = createEM();
 		try {
@@ -127,7 +127,7 @@ public class UsuarioDAO {
 			q.setParameter("password", usuario.getPassword());
 			Usuario usuario2 = q.getSingleResult();
 			System.out.println(usuario2);
-			if(usuario2 != null){
+			if (usuario2 != null) {
 				result = true;
 			}
 			em.getTransaction().commit();
@@ -143,11 +143,11 @@ public class UsuarioDAO {
 			throw new DAOException("La query es invalida o no se ha definido", e);
 		} catch (Exception e) {
 			throw new DAOException(e);
-		}		
+		}
 		return result;
 	}
-	
-	public Usuario getUsuarioByNamePassword(Usuario usuario) throws DAOException{
+
+	public Usuario getUsuarioByNamePassword(Usuario usuario) throws DAOException {
 		Usuario result = null;
 		EntityManager em = createEM();
 		try {
@@ -157,7 +157,7 @@ public class UsuarioDAO {
 			q.setParameter("password", usuario.getPassword());
 			Usuario usuario2 = q.getSingleResult();
 			System.out.println(usuario2);
-			if(usuario2 != null){
+			if (usuario2 != null) {
 				result = usuario2;
 			}
 			em.getTransaction().commit();
@@ -173,7 +173,29 @@ public class UsuarioDAO {
 			throw new DAOException("La query es invalida o no se ha definido", e);
 		} catch (Exception e) {
 			throw new DAOException(e);
-		}		
+		}
 		return result;
+	}
+
+	public Usuario updateUsuario(Usuario usuario) throws DAOException {
+		EntityManager em = createEM();
+		try {
+			em.getTransaction().begin();
+			em.merge(usuario);
+			em.getTransaction().commit();
+		} catch (EntityExistsException e) {
+			throw new DAOException("Error, la entidad ya existe");
+		} catch (IllegalStateException e) {
+			throw new DAOException("Error de estado, puede ser del begin o el commit", e);
+		} catch (RollbackException e) {
+			throw new DAOException("Error al hacer el commit de la transaccion. Deshaciendo cambios...", e);
+		} catch (TransactionRequiredException e) {
+			throw new DAOException("Error, no hay una transaccion empezada al hacer el persist", e);
+		} catch (IllegalArgumentException e) {
+			throw new DAOException("La instacia pasada por parametro no es una entidad o es null", e);
+		} catch (Exception e) {
+			throw new DAOException(e);
+		}
+		return usuario;
 	}
 }

@@ -15,6 +15,7 @@ import model.Cuenta;
 import model.Paquete;
 import model.ServerManager;
 import model.Usuario;
+import utils.DAOException;
 
 public class ServidorMain implements Runnable {
 
@@ -47,9 +48,16 @@ public class ServidorMain implements Runnable {
 			}*/
 			break;
 
-		case 3:
-			Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
-			new CuentaController().extraerDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
+		case 3: //UPDATEAR USUARIO
+			Paquete<Usuario> paqueteCuenta = (Paquete<Usuario>) paquete;
+			try {
+				paqueteCuenta.setObjeto(new UsuarioDAO().updateUsuario(paqueteCuenta.getObjeto()));
+				paqueteCuenta.setResultado(true);
+				this.sm.sendObjectToServer(paqueteCuenta);
+			} catch (DAOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 
 		case 4:
