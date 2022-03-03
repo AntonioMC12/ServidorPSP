@@ -11,6 +11,7 @@ public class Paquete<T> implements Serializable {
 	double cantidad;
 	Boolean resultado;
 
+
 	public Boolean getResultado() {
 		return resultado;
 	}

@@ -42,16 +42,23 @@ public class ServerManager {
 
     public void sendObjectToServer(Object obj){
 
-        try(ServerSocket serverSocket = new ServerSocket(port)) {
+       // try(ServerSocket serverSocket = new ServerSocket(port)) {
             
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            outputStream.writeObject(obj);
+            try {
+				outputStream = new ObjectOutputStream(socket.getOutputStream()); 
+				outputStream.writeObject(obj);
+				outputStream.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+           
 
-            outputStream.flush();
+            
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+      //  } catch (Exception e) {
+       //     e.printStackTrace();
+      //  }
     }
 
 	public int getPort() {

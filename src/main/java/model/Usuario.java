@@ -59,6 +59,10 @@ public class Usuario implements Serializable {
 		this.administrador = administrador;
 
 	}
+	
+	public Usuario(String nombre, String pass) {
+		this(-1L,nombre,"default","default",pass, new ArrayList<Cuenta>(), new Administrador());
+	}
 
 	public Usuario() {
 		this(-1L, "default", "default", "default", "default", new ArrayList<Cuenta>(), new Administrador());
@@ -148,6 +152,8 @@ public class Usuario implements Serializable {
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", correo=" + correo
-				+ ", password=" + password + "]";
+				+ ", password=" + password + ", cuentas=" + cuentas + ", administrador=" + administrador + "]";
 	}
+
+
 }

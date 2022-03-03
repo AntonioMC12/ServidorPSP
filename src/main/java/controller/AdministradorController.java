@@ -8,21 +8,20 @@ public class AdministradorController {
     
     public boolean getAdminById(Long id) {
         try {
-			new AdministradorDAO().getAdmin(id);
+			return new AdministradorDAO().getAdmin(id);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-        return false;
     }
 	public boolean logAdministrador(Administrador admin) {
 		try {
-			new AdministradorDAO().logAdmin(admin);
-			return true;
+			return new AdministradorDAO().logAdmin(admin);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 }

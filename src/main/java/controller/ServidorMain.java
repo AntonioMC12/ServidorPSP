@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
+
+import dao.UsuarioDAO;
 import model.Administrador;
 import model.Cuenta;
 import model.Paquete;
@@ -14,21 +17,14 @@ import model.Usuario;
 
 public class ServidorMain implements Runnable {
 
-	ServerSocket servidor ;
+	ServerSocket servidor;
 	ServerManager sm = new ServerManager(9999);
-	public void serverController(Object action) {
-		/**Socket cliente = null;
-		OutputStream salida;
-		try {
-			salida = cliente.getOutputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		 */
+	public void serverController(Object action) {
+
 		Paquete<?> paquete = (Paquete<?>) action;
-		switch (paquete.getOpcion()) {/**
+		switch (paquete.getOpcion()) {
+
 		case 1:
 			Paquete<Usuario> paqueteUsuario = (Paquete<Usuario>) paquete;
 			System.out.println(paqueteUsuario.toString());
@@ -37,19 +33,19 @@ public class ServidorMain implements Runnable {
 			break;
 
 		case 2:
-			Paquete<Object> respuestPaqueteCuenta5 = new Paquete<Object>();
+			/*Paquete<Object> respuestPaqueteCuenta5 = new Paquete<Object>();
 			ObjectOutputStream salidaObjetoCuenta5;
-				try {
-					salidaObjetoCuenta5 = new ObjectOutputStream(cliente.getOutputStream());
-					new CuentaController().mostrarCuentas();
-					respuestPaqueteCuenta5.setResultado(true);
-					salidaObjetoCuenta5.writeObject(respuestPaqueteCuenta5);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			try {
+				salidaObjetoCuenta5 = new ObjectOutputStream(cliente.getOutputStream());
+				new CuentaController().mostrarCuentas();
+				respuestPaqueteCuenta5.setResultado(true);
+				salidaObjetoCuenta5.writeObject(respuestPaqueteCuenta5);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
 			break;
-			
+
 		case 3:
 			Paquete<Cuenta> paqueteCuenta = (Paquete<Cuenta>) paquete;
 			new CuentaController().extraerDinero(paqueteCuenta.getObjeto(), paqueteCuenta.getCantidad());
@@ -61,18 +57,17 @@ public class ServidorMain implements Runnable {
 			break;
 
 		case 5:
-			Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
+			/*Paquete<Usuario> paqueteUsuario2 = (Paquete<Usuario>) paquete;
 			Paquete<Object> respuestPaqueteUsuario2 = new Paquete<Object>();
 			ObjectOutputStream salidaObjetoUsuario2;
-				try {
-					salidaObjetoUsuario2 = new ObjectOutputStream(cliente.getOutputStream());
-					new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
-					respuestPaqueteUsuario2.setResultado(true);
-					salidaObjetoUsuario2.writeObject(respuestPaqueteUsuario2);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			try {
+				salidaObjetoUsuario2 = new ObjectOutputStream(cliente.getOutputStream());
+				new UsuarioController().createUsuario(paqueteUsuario2.getObjeto());
+				respuestPaqueteUsuario2.setResultado(true);
+				salidaObjetoUsuario2.writeObject(respuestPaqueteUsuario2);
+			} catch (IOException e1) { // TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
 			break;
 
 		case 6:
@@ -90,7 +85,7 @@ public class ServidorMain implements Runnable {
 			break;
 
 		case 9:
-			Paquete<Cuenta> paqueteCuenta4 = (Paquete<Cuenta>) paquete;
+			/*Paquete<Cuenta> paqueteCuenta4 = (Paquete<Cuenta>) paquete;
 			Paquete<Object> respuestPaqueteCuenta4 = new Paquete<Object>();
 			ObjectOutputStream salidaObjetoCuenta4;
 			new CuentaController().BorrarCuenta(paqueteCuenta4.getObjeto());
@@ -98,12 +93,10 @@ public class ServidorMain implements Runnable {
 			try {
 				salidaObjetoCuenta4 = new ObjectOutputStream(cliente.getOutputStream());
 				salidaObjetoCuenta4.writeObject(respuestPaqueteCuenta4);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
+			} catch (IOException e1) { // TODO Auto-generated catch block
 				e1.printStackTrace();
-			} catch (Exception e) {
-				//TODO: handle exception
-			}
+			} catch (Exception e) { // TODO: handle exception
+			}*/
 			break;
 
 		case 10:
@@ -111,40 +104,37 @@ public class ServidorMain implements Runnable {
 			new AdministradorController().getAdminById(paqueteAdministrador.getObjeto().getId());
 			break;
 
-		case 11:
-			Paquete<Usuario> paqueteUsuario3 = (Paquete<Usuario>) paquete;
-			Paquete<Usuario> respuestPaqueteUsuario3 = new Paquete();
+		case 11: // LOGIN USUARIO, DEVUELVE TRUE SI ESTA EN LA BD Y FALSE SI NO.
+			Paquete<Usuario> paqueteUsuario11 = (Paquete<Usuario>) paquete;
 			try {
-				ObjectOutputStream salidaObjetoUsuario3 = new ObjectOutputStream(cliente.getOutputStream());
-				
-				if (new UsuarioController().logUser(paqueteUsuario3.getObjeto())) {
-					respuestPaqueteUsuario3.setResultado(true);
-					salidaObjetoUsuario3.writeObject(respuestPaqueteUsuario3);
+				Boolean bool = new UsuarioController().logUser(paqueteUsuario11.getObjeto());
+				if (bool) {
+					paqueteUsuario11.setResultado(true);
+					//paqueteUsuario11.setObjeto(new Usuario());
+					paqueteUsuario11.setCantidad(new UsuarioDAO().getUsuarioByNamePassword(paqueteUsuario11.getObjeto()).getId());
+					Usuario u=new UsuarioDAO().getUsuarioByNamePassword(paqueteUsuario11.getObjeto());
+					paqueteUsuario11.setObjeto(u);
+					this.sm.sendObjectToServer(paqueteUsuario11);
 				} else {
-					respuestPaqueteUsuario3.setResultado(false);
-					salidaObjetoUsuario3.writeObject(respuestPaqueteUsuario3);
+					paqueteUsuario11.setResultado(false);
+					this.sm.sendObjectToServer(paqueteUsuario11);
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
 			}
 			break;
-*/
-		case 12:
+
+		case 12: // LOGIN ADMINISTRADOR, DEVUELVE TRUE SI ESTA EN LA BD Y FALSE SI NO.
 			Paquete<Administrador> paqueteAdministrador4 = (Paquete<Administrador>) paquete;
-			//Paquete<Administrador> respuestAdministrador4 = new Paquete();
-			
 			try {
 				Boolean bool = new AdministradorController().logAdministrador(paqueteAdministrador4.getObjeto());
 				if (bool) {
 					paqueteAdministrador4.setResultado(true);
-					this.sm.sendObjectToServer(paqueteAdministrador4);		
+					this.sm.sendObjectToServer(paqueteAdministrador4);
 				} else {
 					paqueteAdministrador4.setResultado(false);
-				}}
-				
-			catch (Exception e) {
-				// TODO: handle exception
+					this.sm.sendObjectToServer(paqueteAdministrador4);
+				}
+			} catch (Exception e) {
 			}
 			break;
 		default:
