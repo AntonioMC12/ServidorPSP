@@ -122,8 +122,8 @@ public class UsuarioDAO {
 			throw new DAOException(e);
 		}
 	}
-	
-	public Boolean logUser(Usuario usuario) throws DAOException{
+
+	public Boolean logUser(Usuario usuario) throws DAOException {
 		Boolean result = false;
 		EntityManager em = createEM();
 		try {
@@ -148,11 +148,11 @@ public class UsuarioDAO {
 			throw new DAOException("La query es invalida o no se ha definido", e);
 		} catch (Exception e) {
 			throw new DAOException(e);
-		}		
+		}
 		return result;
 	}
-	
-	public Usuario getUsuarioByNamePassword(Usuario usuario) throws DAOException{
+
+	public Usuario getUsuarioByNamePassword(Usuario usuario) throws DAOException {
 		Usuario result = null;
 		EntityManager em = createEM();
 		try {
@@ -162,7 +162,7 @@ public class UsuarioDAO {
 			q.setParameter("password", usuario.getPassword());
 			Usuario usuario2 = q.getSingleResult();
 			System.out.println(usuario2);
-			if(usuario2 != null){
+			if (usuario2 != null) {
 				result = usuario2;
 			}
 			em.getTransaction().commit();
@@ -178,10 +178,11 @@ public class UsuarioDAO {
 			throw new DAOException("La query es invalida o no se ha definido", e);
 		} catch (Exception e) {
 			throw new DAOException(e);
-		}		
+		}
 		return result;
 	}
-	public Usuario updateUsuario(Usuario usuario) throws DAOException{
+
+	public Usuario updateUsuario(Usuario usuario) throws DAOException {
 		EntityManager em = createEM();
 		try {
 			em.getTransaction().begin();
@@ -202,7 +203,6 @@ public class UsuarioDAO {
 		}
 		return usuario;
 	}
-
     public List<Usuario> showAllByAdmin(Long id) throws DAOException {
         EntityManager em = createEM();
         List<Usuario> result = null;
