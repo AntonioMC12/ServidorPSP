@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.UsuarioDAO;
@@ -110,10 +111,13 @@ public class ServidorMain implements Runnable {
 				Boolean bool = new UsuarioController().logUser(paqueteUsuario11.getObjeto());
 				if (bool) {
 					paqueteUsuario11.setResultado(true);
-					//paqueteUsuario11.setObjeto(new Usuario());
-					paqueteUsuario11.setCantidad(new UsuarioDAO().getUsuarioByNamePassword(paqueteUsuario11.getObjeto()).getId());
+
 					Usuario u=new UsuarioDAO().getUsuarioByNamePassword(paqueteUsuario11.getObjeto());
+				
 					paqueteUsuario11.setObjeto(u);
+					
+					System.out.println("+++++++++++++++++++++++++++++");
+					System.out.println(paqueteUsuario11);
 					this.sm.sendObjectToServer(paqueteUsuario11);
 				} else {
 					paqueteUsuario11.setResultado(false);
@@ -154,6 +158,13 @@ public class ServidorMain implements Runnable {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+	}
+	
+	public List<Cuenta> removeUserFromCuentas(List<Cuenta> cuentas) {
+		for (Cuenta cuenta : cuentas) {
+			cuenta.setUsuario(null);
+		}
+		return cuentas;
 	}
 
 }
